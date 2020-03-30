@@ -1,41 +1,68 @@
 const express = require('express');
 const router = express.Router();
 const request = require('request-promise');
-const conf = require ('../conf');
-const sql = require ('mssql');
+const conf = require('../conf');
+const sql = require('mssql');
 
 // GET
-router.post('/', async(req,res, next) =>{
-  
+router.post('/', async (req, res, next) => {
+
 	// get request body
 	var req_body_json = await JSON.stringify(req.body);
-	var req_body  = await req.body;
+	var req_body = await req.body;
 	//var parsedParams = JSON.parse(req_body_json);
 	// post request to whatsapp
-	
+
 	// res.send(req_body_json);
 	// res.send(req_body.ordernumber + ' ' + req_body.referentie);
-	
+	// res.send(Object.keys(req_body));
+	console.log(Object.keys(req_body).length);
+	// res.sendStatus(Object.keys(req_body).length);
 
-	sql.connect(conf, function(err) {
-        if (err) console.log(err);
 
-        let sqlRequest = new sql.Request();
+	sql.connect(conf, function (err) {
+		if (err) console.log(err);
 
-        let sqlQuery="INSERT INTO orders (ordernr, referentie) VALUES ('"+ req_body.ordernumber +"', '"+req_body.referentie+"')";
+		let sqlRequest = new sql.Request();
+		var keys = Object.keys(req_body);
+		var values = Object.values(req_body);
+		var key = '';
+		var value = '';
+		var table = '';
 
-        sqlRequest.query(sqlQuery, function (err, data) {
+		for (i = 0; i < Object.keys(req_body).length; i++) {
+			if (i > 1) {
+				key += ','
+				value += `,`
 
-            if (err) console.log(err)
+			}
 
-            res.send(data);
+			if (i < 1) {
+				table = `${values[i]}`
+			} else {
+				key += `${keys[i]}`
+				value += `'${values[i]}'`
+			}
+		}
 
-            sql.close();
-	
-	
-		});	
+
+
+		let sqlQuery = `INSERT INTO ${table} (${key}) VALUES (${value})`;
+
+		// res.send(sqlQuery);
+
+		sqlRequest.query(sqlQuery, function (err, data) {
+
+			if (err) console.log(err)
+
+			res.send(data);
+
+			sql.close();
+
+
+		});
 	});
-  
+
 
 });
 
