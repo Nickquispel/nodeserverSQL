@@ -7,9 +7,9 @@ const get = require('./api/get');
 const post = require('./api/post');
 
 app.use(bodyParser.json());
-app.use('/get', get);
+app.use('/postselect', get);
 // app.use('/put', put);
-app.use('/post', post);
+app.use('/postinsert', post);
 
 
 /*

@@ -7,17 +7,11 @@ const sql = require('mssql');
 // GET
 router.post('/', async (req, res, next) => {
 
-	// get request body
 	var req_body_json = await JSON.stringify(req.body);
 	var req_body = await req.body;
-	//var parsedParams = JSON.parse(req_body_json);
-	// post request to whatsapp
-
-	// res.send(req_body_json);
-	// res.send(req_body.ordernumber + ' ' + req_body.referentie);
-	// res.send(Object.keys(req_body));
+	
 	console.log(Object.keys(req_body).length);
-	// res.sendStatus(Object.keys(req_body).length);
+	
 
 
 	sql.connect(conf, function (err) {
